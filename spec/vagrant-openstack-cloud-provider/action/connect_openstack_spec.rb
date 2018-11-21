@@ -14,6 +14,8 @@ RSpec.describe VagrantPlugins::OpenStack::Action::ConnectOpenStack do
         :api_key   => 'password',
         :endpoint  => 'http://openstack.invalid/',
         :tenant    => nil,
+        :project_name => nil,
+        :domain_id => nil,
       )
     }
 
@@ -37,8 +39,8 @@ RSpec.describe VagrantPlugins::OpenStack::Action::ConnectOpenStack do
       expect(env).to have_key(:openstack_network)
     end
 
-    {Fog::Compute => :openstack_compute,
-     Fog::Network => :openstack_network}.each do |klass, attribute|
+    {Fog::OpenStack::Compute => :openstack_compute,
+     Fog::OpenStack::Network => :openstack_network}.each do |klass, attribute|
       it "should late-evaluate #{klass}" do
         expect(app).to receive(:call)
         expect(machine).to receive(:provider_config).and_return(config)

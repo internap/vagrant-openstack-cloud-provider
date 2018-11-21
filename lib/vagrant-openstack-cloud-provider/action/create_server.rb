@@ -125,7 +125,7 @@ module VagrantPlugins
           env[:machine].data_dir.join("cached_metadata").open("w+") do |f|
             f.write(server.to_json)
           end
-          public_ip_address = server.addresses[config.public_network_name].last['addr'] rescue nil
+          public_ip_address = server.addresses[config.public_network_name].last['addr']
           env[:ui].info("Instance IP address: #{public_ip_address}")
 
           unless env[:interrupted]
@@ -146,13 +146,15 @@ module VagrantPlugins
         def ssh_is_responding?(env, timeout, sleep_interval)
            begin
              # Wait for SSH to become available
+             env[:ui].info("machine is #{env[:machine].inspect}")
              env[:ui].info(I18n.t("vagrant_openstack.waiting_for_ssh"))
              (1..timeout / sleep_interval).each do |n|
                begin
                  # If we're interrupted then just back out
                  break if env[:interrupted]
                  break if env[:machine].communicate.ready?
-               rescue Errno::ENETUNREACH
+               rescue Errno::ENETUNREACH => e
+                 env[:ui].info("Problem with #{e}")
                end
                sleep sleep_interval
              end

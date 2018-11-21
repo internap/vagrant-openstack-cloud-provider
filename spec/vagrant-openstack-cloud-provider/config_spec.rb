@@ -13,6 +13,7 @@ RSpec.describe VagrantPlugins::OpenStack::Config do
     end
 
     it { is_expected.to have_attributes(api_key: nil) }
+    it { is_expected.to have_attributes(domain_id: nil) }
     it { is_expected.to have_attributes(endpoint: nil) }
     it { is_expected.to have_attributes(region: nil) }
     it { is_expected.to have_attributes(flavor: /m1.tiny/) }
@@ -26,6 +27,7 @@ RSpec.describe VagrantPlugins::OpenStack::Config do
     it { is_expected.to have_attributes(public_network_name: "public") }
     it { is_expected.to have_attributes(networks: ["public"]) }
     it { is_expected.to have_attributes(tenant: nil) }
+    it { is_expected.to have_attributes(project_name: nil) }
     it { is_expected.to have_attributes(scheduler_hints: {}) }
     it { is_expected.to have_attributes(instance_build_timeout: 120) }
     it { is_expected.to have_attributes(instance_build_status_check_interval: 1) }
@@ -36,6 +38,7 @@ RSpec.describe VagrantPlugins::OpenStack::Config do
 
   describe "overriding defaults - strings" do
     [:api_key,
+      :domain_id,
       :endpoint,
       :region,
       :flavor,
@@ -48,6 +51,7 @@ RSpec.describe VagrantPlugins::OpenStack::Config do
       :public_network_name,
       :networks,
       :tenant,
+      :project_name,
       :scheduler_hints,
       :report_progress].each do |attribute|
       it "should not default #{attribute} if overridden" do
@@ -78,24 +82,6 @@ RSpec.describe VagrantPlugins::OpenStack::Config do
       super().tap do |o|
         o.finalize!
       end
-    end
-
-    context "with good values" do
-      it "should validate"
-    end
-
-    context "the API key" do
-      it "should error if not given"
-    end
-
-    context "the public key path" do
-      it "should have errors if the key doesn't exist"
-      it "should not have errors if the key exists with an absolute path"
-      it "should not have errors if the key exists with a relative path"
-    end
-
-    context "the username" do
-      it "should error if not given"
     end
 
     context "the numeric values" do

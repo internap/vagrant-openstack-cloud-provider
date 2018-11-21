@@ -18,16 +18,20 @@ module VagrantPlugins
           config = env[:machine].provider_config
 
           openstack_options = {
-              :provider => :openstack,
               :openstack_region => config.region,
               :openstack_username => config.username,
               :openstack_api_key => config.api_key,
               :openstack_auth_url => config.endpoint,
-              :openstack_tenant => config.tenant
+              :openstack_tenant => config.tenant,
+              :openstack_project_name => config.project_name,
+              :openstack_domain_id => config.domain_id,
+              :openstack_identity_api_version => "v2.0"
           }
 
           $openstack_compute ||= get_fog_promise('Compute', openstack_options)
           $openstack_network ||= get_fog_promise('Network', openstack_options)
+          # $openstack_compute ||= Fog::OpenStack::Compute.new(openstack_options)
+          # $openstack_network ||= Fog::OpenStack::Network.new(openstack_options)
 
           env[:openstack_compute] = $openstack_compute
           env[:openstack_network] = $openstack_network
@@ -40,7 +44,7 @@ module VagrantPlugins
         def get_fog_promise(service_name, openstack_options)
           Kernel.promise {
             @logger.info("Initializing OpenStack #{service_name}...")
-            Fog.const_get(service_name).new(openstack_options)
+            Module.const_get("Fog::OpenStack::#{service_name}").new(openstack_options)
           }
         end
       end

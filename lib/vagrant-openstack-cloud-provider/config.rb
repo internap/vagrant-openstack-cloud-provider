@@ -9,6 +9,12 @@ module VagrantPlugins
       # @return [String]
       attr_accessor :api_key
 
+      # The domain id to access OpenStack.
+      # Used by keystone v3
+      #
+      # @return [String]
+      attr_accessor :domain_id
+
       # The endpoint to access OpenStack.
       #
       # @return [String]
@@ -65,8 +71,14 @@ module VagrantPlugins
       # @return [String]
       attr_accessor :networks
 
+      # Tenant name, use for v2 keystone auth
+      #
       # @return [String]
       attr_accessor :tenant
+
+      # Project name, use for v3 keystone auth
+      # @return [String]
+      attr_accessor :project_name
 
       # @return [Hash]
       attr_accessor :scheduler_hints
@@ -89,6 +101,7 @@ module VagrantPlugins
 
       def initialize
         @api_key  = UNSET_VALUE
+        @domain_id  = UNSET_VALUE
         @endpoint = UNSET_VALUE
         @region = UNSET_VALUE
         @flavor   = UNSET_VALUE
@@ -102,6 +115,7 @@ module VagrantPlugins
         @public_network_name = UNSET_VALUE
         @networks = UNSET_VALUE
         @tenant = UNSET_VALUE
+        @project_name = UNSET_VALUE
         @scheduler_hints = UNSET_VALUE
         @instance_build_timeout = UNSET_VALUE
         @instance_build_status_check_interval = UNSET_VALUE
@@ -112,6 +126,7 @@ module VagrantPlugins
 
       def finalize!
         @api_key  = nil if @api_key == UNSET_VALUE
+        @domain_id  = nil if @domain_id == UNSET_VALUE
         @endpoint = nil if @endpoint == UNSET_VALUE
         @region = nil if @region == UNSET_VALUE
         @flavor   = /m1.tiny/ if @flavor == UNSET_VALUE
@@ -132,6 +147,7 @@ module VagrantPlugins
         @public_network_name = "public" if @public_network_name == UNSET_VALUE
         @networks = [@public_network_name] if @networks == UNSET_VALUE
         @tenant = nil if @tenant == UNSET_VALUE
+        @project_name = nil if @project_name == UNSET_VALUE
         @scheduler_hints = {} if @scheduler_hints == UNSET_VALUE
         @instance_build_timeout = 120 if @instance_build_timeout == UNSET_VALUE
         @instance_build_status_check_interval = 1 if @instance_build_status_check_interval == UNSET_VALUE
