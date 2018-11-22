@@ -89,8 +89,10 @@ module VagrantPlugins
             end
 
             b2.use ConnectOpenStack
-            b2.use Provision
-            b2.use SyncFolders
+            if env[:provision_enabled]
+              b2.use Provision
+              b2.use SyncFolders
+            end
             b2.use SetHostname
             b2.use CreateServer
           end
