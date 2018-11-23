@@ -17,12 +17,49 @@ This plugin started as a fork of the Vagrant Rackspace provider.
 * Provision the instances with any built-in Vagrant provisioner.
 * Minimal synced folder support via `rsync`.
 * Create instances with a specific list of networks
+* Support for both keystone v2 and v3
 
 ## Usage
 
-```
+Using keystone v3 :
+
+```bash
 $ vagrant plugin install vagrant-openstack-cloud-provider
 $ cat <<EOF > Vagrantfile
+require 'vagrant-openstack-cloud-provider'
+
+Vagrant.configure("2") do |config|
+
+  # This is a publicly available dummy box.
+  config.vm.box = "sharpie/dummy"
+
+  config.vm.provider :openstack do |os|
+    os.username = "${OS_USERNAME}"
+    os.api_key  = "${OS_PASSWORD}"
+    os.flavor   = /m1.tiny/
+    os.image    = /Ubuntu/
+    os.endpoint = "${OS_AUTH_URL}" # such as http://openstack.invalid/ without /v3/auth/tokens
+    os.keypair_name = "" # Your keypair name
+    os.ssh_username = "" # Your image SSH username
+    os.public_network_name = "public" # Your Neutron network name
+    os.networks = %w() # Additional neutron networks
+    os.region = "${OS_REGION_NAME}"
+    os.project_name = "${OS_PROJECT_NAME}"
+    os.project_domain_id = "${OS_PROJECT_DOMAIN_ID}"
+    os.user_domain_name = "${OS_USER_DOMAIN_NAME}"
+    os.identity_api_version = 'v3'
+  end
+end
+EOF
+$ vagrant up --provider=openstack
+...
+```
+
+### Using keystone v2 (deprecated)
+
+You can use a Vagrantfile such as :
+
+```ruby
 require 'vagrant-openstack-cloud-provider'
 
 Vagrant.configure("2") do |config|
@@ -44,9 +81,6 @@ Vagrant.configure("2") do |config|
     os.region = "${OS_REGION_NAME}"
   end
 end
-EOF
-$ vagrant up --provider=openstack
-...
 ```
 
 ## Configuration
@@ -70,7 +104,21 @@ This provider exposes quite a few provider-specific configuration options:
 * `public_network_name` - The name of the public network within your Openstack cluster
 * `networks` - A list -- use %w(net1 net2) -- of networks to configure
   on your instance.
-* `tenant` - The name of the tenant on which the virtual machine should spawn.
+* `tenant` - *(Deprecated)* The name of the tenant on which the virtual machine should spawn.
+
+Keystone v3 specific configuration , Having one of those settings incorrect
+will result in an `401: Unauthorized` in keystone.
+
+* `project_name` - The name of the project on which the virtual machine should spawn , used to be `tenant`
+* `project_id` - The id of the tenant on which the virtual machine should spawn
+* `domain_name` -  which domain to use to authenticate
+* `domain_id` - the id of the domain
+* `project_domain_name` - In which domain your project exists
+* `project_domain_id` - The id of the domain your project exists
+* `user_domain_name` -  In which domain your user exists in
+* `user_domain_id` - the id of the domain your user exists in
+* `identity_api_version` - Which version of keystone, specifying this to `3` will
+autocomplete your url with /v3/auth/tokens to be forward compatible. Currently known version are `2.0`, `3`
 
 These can be set like typical provider-specific configuration:
 
