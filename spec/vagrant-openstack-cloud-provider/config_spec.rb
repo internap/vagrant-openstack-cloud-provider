@@ -26,6 +26,19 @@ RSpec.describe VagrantPlugins::OpenStack::Config do
     it { is_expected.to have_attributes(public_network_name: "public") }
     it { is_expected.to have_attributes(networks: ["public"]) }
     it { is_expected.to have_attributes(tenant: nil) }
+    it { is_expected.to have_attributes(project_name: nil) }
+    it { is_expected.to have_attributes(domain_id: nil) }
+
+    it { is_expected.to have_attributes(project_name: nil) }
+    it { is_expected.to have_attributes(project_id: nil) }
+    it { is_expected.to have_attributes(domain_name: nil) }
+    it { is_expected.to have_attributes(domain_id: nil) }
+    it { is_expected.to have_attributes(project_domain_name: nil) }
+    it { is_expected.to have_attributes(project_domain_id: nil) }
+    it { is_expected.to have_attributes(user_domain_name: nil) }
+    it { is_expected.to have_attributes(user_domain_id: nil) }
+    it { is_expected.to have_attributes(identity_api_version: nil) }
+
     it { is_expected.to have_attributes(scheduler_hints: {}) }
     it { is_expected.to have_attributes(instance_build_timeout: 120) }
     it { is_expected.to have_attributes(instance_build_status_check_interval: 1) }
@@ -48,6 +61,15 @@ RSpec.describe VagrantPlugins::OpenStack::Config do
       :public_network_name,
       :networks,
       :tenant,
+      :project_name,
+      :project_id,
+      :domain_name,
+      :domain_id,
+      :project_domain_name,
+      :project_domain_id,
+      :user_domain_name,
+      :user_domain_id,
+      :identity_api_version,
       :scheduler_hints,
       :report_progress].each do |attribute|
       it "should not default #{attribute} if overridden" do
@@ -55,6 +77,26 @@ RSpec.describe VagrantPlugins::OpenStack::Config do
         subject.finalize!
         expect(subject.send(attribute)).to eq("foo")
       end
+    end
+  end
+
+  describe "openstack v3" do
+    let(:vagrant_public_key) { Vagrant.source_root.join("keys/vagrant.pub") }
+
+    def test(key, value)
+      subject.send("#{key}=", value)
+      subject.finalize!
+      subject.send(key)
+    end
+
+    it 'parses identity version' do
+      expect(test('identity_api_version', '3')).to eq('3')
+      expect(test('identity_api_version', '2.0')).to eq('2.0')
+      expect(test('identity_api_version', '2.1')).to eq('2.1')
+      expect(test('identity_api_version', 'v2.0')).to eq('2.0')
+      expect(test('identity_api_version', 'v3')).to eq('3')
+      expect(test('identity_api_version', 3)).to eq('3')
+      expect(test('identity_api_version', 2)).to eq('2')
     end
   end
 
@@ -78,24 +120,6 @@ RSpec.describe VagrantPlugins::OpenStack::Config do
       super().tap do |o|
         o.finalize!
       end
-    end
-
-    context "with good values" do
-      it "should validate"
-    end
-
-    context "the API key" do
-      it "should error if not given"
-    end
-
-    context "the public key path" do
-      it "should have errors if the key doesn't exist"
-      it "should not have errors if the key exists with an absolute path"
-      it "should not have errors if the key exists with a relative path"
-    end
-
-    context "the username" do
-      it "should error if not given"
     end
 
     context "the numeric values" do

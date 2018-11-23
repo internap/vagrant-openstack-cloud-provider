@@ -68,6 +68,38 @@ module VagrantPlugins
       # @return [String]
       attr_accessor :tenant
 
+      # Used by keystone v3
+
+      # @return [String]
+      attr_accessor :project_name
+
+      # @return [String]
+      attr_accessor :project_id
+
+      # @return [String]
+      attr_accessor :domain_name
+
+      # @return [String]
+      attr_accessor :domain_id
+
+      # @return [String]
+      attr_accessor :project_domain_name
+
+      # @return [String]
+      attr_accessor :project_domain_id
+
+      # @return [String]
+      attr_accessor :user_domain_name
+
+      # @return [String]
+      attr_accessor :user_domain_id
+
+      # Version to use for keystone authentication
+      # Not used for now, will be supported in the next version.
+      # Known version are 'v2.0', 'v3'
+      # @return [String]
+      casting_attr_accessor :identity_api_version, String
+
       # @return [Hash]
       attr_accessor :scheduler_hints
 
@@ -89,6 +121,7 @@ module VagrantPlugins
 
       def initialize
         @api_key  = UNSET_VALUE
+        @domain_id  = UNSET_VALUE
         @endpoint = UNSET_VALUE
         @region = UNSET_VALUE
         @flavor   = UNSET_VALUE
@@ -108,16 +141,39 @@ module VagrantPlugins
         @instance_ssh_timeout = UNSET_VALUE
         @instance_ssh_check_interval = UNSET_VALUE
         @report_progress = UNSET_VALUE
+
+        @project_name = UNSET_VALUE
+        @project_id = UNSET_VALUE
+        @domain_name = UNSET_VALUE
+        @domain_id = UNSET_VALUE
+        @project_domain_name = UNSET_VALUE
+        @project_domain_id = UNSET_VALUE
+        @user_domain_name = UNSET_VALUE
+        @user_domain_id = UNSET_VALUE
+        @identity_api_version = UNSET_VALUE
+
       end
 
       def finalize!
         @api_key  = nil if @api_key == UNSET_VALUE
+        @domain_id  = nil if @domain_id == UNSET_VALUE
         @endpoint = nil if @endpoint == UNSET_VALUE
         @region = nil if @region == UNSET_VALUE
         @flavor   = /m1.tiny/ if @flavor == UNSET_VALUE
         @image    = /cirros/ if @image == UNSET_VALUE
         @server_name = nil if @server_name == UNSET_VALUE
         @username = nil if @username == UNSET_VALUE
+
+        @project_name = nil if @project_name == UNSET_VALUE
+        @project_id = nil if @project_id == UNSET_VALUE
+        @domain_name = nil if @domain_name == UNSET_VALUE
+        @domain_id = nil if @domain_id == UNSET_VALUE
+        @project_domain_name = nil if @project_domain_name == UNSET_VALUE
+        @project_domain_id = nil if @project_domain_id == UNSET_VALUE
+        @user_domain_name = nil if @user_domain_name == UNSET_VALUE
+        @user_domain_id = nil if @user_domain_id == UNSET_VALUE
+        @identity_api_version = nil if @identity_api_version == UNSET_VALUE
+        @identity_api_version = @identity_api_version.reverse.chomp('v').reverse if @identity_api_version
 
         # Keypair defaults to nil
         @keypair_name = nil if @keypair_name == UNSET_VALUE
