@@ -25,7 +25,7 @@ GIT
 PATH
   remote: .
   specs:
-    vagrant-openstack-cloud-provider (1.1.13)
+    vagrant-openstack-cloud-provider (1.2.0)
       fog-openstack (~> 0.1.29)
       promise (~> 0.3.1)
 
