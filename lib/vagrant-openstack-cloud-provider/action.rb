@@ -89,7 +89,7 @@ module VagrantPlugins
             end
 
             b2.use ConnectOpenStack
-            if env[:provision_enabled]
+            unless env[:provision_enabled] == false
               b2.use Provision
               b2.use SyncFolders
             end
