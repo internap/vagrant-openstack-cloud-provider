@@ -174,3 +174,8 @@ that uses it, and uses bundler to execute Vagrant:
 ```
 $ bundle exec vagrant up --provider=openstack
 ```
+
+### Tools
+
+- `tools/reinstall.sh` reinstall the plugin in your local vagrant
+- `Dockefile` build the project and run the tests without ruby `docker build .`
