@@ -57,31 +57,7 @@ $ vagrant up --provider=openstack
 
 ### Using keystone v2 (deprecated)
 
-You can use a Vagrantfile such as :
-
-```ruby
-require 'vagrant-openstack-cloud-provider'
-
-Vagrant.configure("2") do |config|
-
-  # This is a publicly available dummy box.
-  config.vm.box = "sharpie/dummy"
-
-  config.vm.provider :openstack do |os|
-    os.username = "${OS_USERNAME}"
-    os.api_key  = "${OS_PASSWORD}"
-    os.flavor   = /m1.tiny/
-    os.image    = /Ubuntu/
-    os.endpoint = "${OS_AUTH_URL}/tokens"
-    os.keypair_name = "" # Your keypair name
-    os.ssh_username = "" # Your image SSH username
-    os.public_network_name = "public" # Your Neutron network name
-    os.networks = %w() # Additional neutron networks
-    os.tenant = "${OS_TENANT_NAME}"
-    os.region = "${OS_REGION_NAME}"
-  end
-end
-```
+You can use a Vagrantfile  that [looks like this](example_box/legacy_keystonev2/Vagrantfile).
 
 ## Configuration
 
