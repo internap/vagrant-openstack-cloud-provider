@@ -64,6 +64,11 @@ module VagrantPlugins
               env[:ui].info("      - #{net['name']}")
             end
           end
+
+          unless config.availability_zone.nil?
+            env[:ui].info(" -- Availability Zone: #{config.availability_zone}")
+          end
+
           env[:ui].info(" -- Name: #{server_name}")
 
           openstack_nics = []
@@ -82,6 +87,10 @@ module VagrantPlugins
             :metadata           => config.metadata,
             :os_scheduler_hints => config.scheduler_hints
           }
+
+          unless config.availability_zone.nil?
+            options[:availability_zone] = config.availability_zone
+          end
 
           if openstack_nics.any?
             options[:nics] = openstack_nics
