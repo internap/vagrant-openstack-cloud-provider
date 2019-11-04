@@ -70,6 +70,8 @@ This provider exposes quite a few provider-specific configuration options:
 * `image` - The server image to boot. This can be a string matching the
   exact ID or name of the image, or this can be a regular expression to
   partially match some image.
+* `availability_zone` - The availability zone to use with nova, 
+this allows to choose which zone your instance will exist on.
 * `endpoint` - The keystone authentication URL of your OpenStack installation.
 * `server_name` - The name of the server within the OpenStack Cloud. This
   defaults to the name of the Vagrant machine (via `config.vm.define`), but

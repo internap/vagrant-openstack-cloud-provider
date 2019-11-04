@@ -94,6 +94,9 @@ module VagrantPlugins
       # @return [String]
       attr_accessor :user_domain_id
 
+      # @return [String]
+      attr_accessor :availability_zone
+
       # Version to use for keystone authentication
       # Not used for now, will be supported in the next version.
       # Known version are 'v2.0', 'v3'
@@ -141,6 +144,7 @@ module VagrantPlugins
         @instance_ssh_timeout = UNSET_VALUE
         @instance_ssh_check_interval = UNSET_VALUE
         @report_progress = UNSET_VALUE
+        @availability_zone = UNSET_VALUE
 
         @project_name = UNSET_VALUE
         @project_id = UNSET_VALUE
@@ -194,6 +198,7 @@ module VagrantPlugins
         @instance_ssh_timeout = 120 if @instance_ssh_timeout == UNSET_VALUE
         @instance_ssh_check_interval = 2 if @instance_ssh_check_interval == UNSET_VALUE
 
+        @availability_zone = nil if @availability_zone == UNSET_VALUE
         @report_progress = true if @report_progress == UNSET_VALUE
       end
 
